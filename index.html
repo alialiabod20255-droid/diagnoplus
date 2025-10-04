@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Diagnoplus — Landing (Builder / Bolt)</title>
+    <!-- وصف قصير يساعد الأدوات على فهم الصفحة -->
+    <meta name="description" content="Diagnoplus — صفحة جذور لدمج Builder.io و Bolt.new" />
+
+    <!-- ====== BUILDER.IO: Web components / SDK integration ======
+      1) أنشئ حساب في https://builder.io
+      2) أنشئ صفحة (Content) واحصل على pageId
+      3) ضع مفتاح API (read key) في المكان الخاص به أدناه اذا استخدمت الاستدعاء عبر API
+      4) الطريقة الأسهل: تضمين عنصر <script> الرسمي ثم استخدام <builder-component> وتهيئته بـ model / url / apiKey
+    ====================================================================== -->
+    <!-- NOTE: استبدل YOUR_BUILDER_API_KEY و YOUR_PAGE_ID بالقيم الحقيقية -->
+    <script>
+        // هذا سكربت تحميل خفيف لتهيئة Builder (الطريقة الرسمية تتطلب تحميل مكتبة Builder من CDN)
+        // إذا أردت استخدام مكتبة Builder الرسمية استعمل:
+        // <script src="https://cdn.builder.io/js/webcomponents"></script>
+    // ثم استخدم <builder-component> مع attributes المناسبة.
+    // هنا نوضّح مثالاً باستخدام fetch لعرض محتوى صفحة Builder (بدون WebComponents).
+    </script>
+
+    <style>
+        body{ font-family: system-ui, "Tajawal", "Roboto", sans-serif; margin:0; padding:0; background:#f7f7f8; color:#111;}
+        header{ padding:28px; background: linear-gradient(90deg,#0b63d4,#3aa0ff); color:white; text-align:center; }
+        main{ padding:20px; max-width:1100px; margin:18px auto; }
+        .notice{ background:#fff; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,.06); padding:18px; }
+        .builder-frame{ width:100%; height:600px; border:1px solid #ddd; border-radius:8px; overflow:hidden; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Diagnoplus — صفحة التكامل مع Builder.io و Bolt.new</h1>
+    <p style="opacity:.95">ضع هذه الصفحة في جذر المشروع ليتم اكتشافها واستيرادها في أدوات مثل Builder.io أو Bolt.new</p>
+</header>
+
+<main>
+    <section class="notice">
+        <h2>تعليمات سريعة</h2>
+        <ol>
+            <li>لـ <strong>Builder.io</strong>: أنشئ محتوى جديد (Page) في حسابك. استخدم إما SDK أو iframe لعرض المحتوى داخل هذه الصفحة.</li>
+            <li>لـ <strong>Bolt.new</strong>: يمكنك استيراد هذا المستودع من GitHub في واجهة bolt.new، وسيبحث عن ملف index.html في الجذر ليعرضه أو يستخدمه كنقطة بداية.</li>
+            <li>بعد رفع الملف للمستودع، افتح Builder.io → models أو content وحدد <em>preview URL</em> أو استخدم iframe المعروض أدناه.</li>
+        </ol>
+    </section>
+
+    <section style="margin-top:18px;" class="notice">
+        <h3>مثال: عرض صفحة Builder.io عبر iframe (بسيط وعملي)</h3>
+        <p>استبدل <code>YOUR_BUILDER_PAGE_URL</code> بعنوان المعاينة/الصفحة من Builder.io أو استخدم URL الذي يعطيه Builder لمحتواك.</p>
+        <div class="builder-frame">
+            <iframe
+                    id="builderIframe"
+                    src="https://builder.io/content/YOUR_PAGE_ID?apiKey=YOUR_BUILDER_API_KEY"
+                    width="100%"
+                    height="100%"
+                    style="border:0;"
+                    title="Builder Page Preview (iframe)">
+            </iframe>
+        </div>
+        <p style="margin-top:8px; font-size:90%">ملاحظة: إذا كنت تستخدم طريقة الـ SDK أو webcomponents فستحتاج لإضافة سكربت CDN الرسمي الخاص بـ Builder قبل استخدام <code>&lt;builder-component&gt;</code>.</p>
+    </section>
+
+    <section style="margin-top:18px;" class="notice">
+        <h3>مثال: جلب محتوى Builder عبر REST API (مثال عملي)</h3>
+        <p>استبدل <code>YOUR_BUILDER_API_KEY</code> و<code>YOUR_PATH</code> بالقيم الحقيقية. هذا مثال بسيط يري كيفية جلب JSON وعرض الـ HTML إن وُجد.</p>
+
+        <pre style="white-space:pre-wrap; background:#f3f7fb; padding:10px; border-radius:6px;">
+&lt;script&gt;
+  async function renderBuilderContent() {
+    const apiKey = 'YOUR_BUILDER_API_KEY'; // ضع مفتاح القراءة هنا
+    const url = 'https://cdn.builder.io/api/v1/content/page?apiKey=' + apiKey + '&url=/';
+    try {
+      const res = await fetch(url);
+      const json = await res.json();
+      // هذا مجرد مثال: محتوى Builder قد يطلب تحويله إلى HTML باستخدام builder sdk أو webcomponents
+      document.getElementById('builder-json-output').textContent = JSON.stringify(json, null, 2);
+    } catch(e) {
+      console.warn('Builder fetch failed', e);
+    }
+  }
+  renderBuilderContent();
+&lt;/script&gt;
+      </pre>
+
+        <div id="builder-json-output" style="white-space:pre-wrap; background:#fff; padding:12px; border-radius:6px; margin-top:8px;">
+            <!-- سيتم وضع الـ JSON هنا عند وجود اتصال -->
+            محتوى Builder سيظهر هنا بعد استدعاء الـ API (استبدل المفاتيح أولاً).
+        </div>
+    </section>
+
+    <section style="margin-top:18px;" class="notice">
+        <h3>ماذا عن Bolt.new؟</h3>
+        <p>
+            <strong>Bolt.new</strong> (bolt.new) يمكنه استيراد مستودع GitHub وإنشاء تطبيق/صفحة انطلاق من ملف الجذر مثل <code>index.html</code>.
+            بعد رفع هذا الملف إلى المستودع:
+        </p>
+        <ul>
+            <li>افتح https://bolt.new → اختر "Import from GitHub" → أدخل رابط المستودع → سيحاول العرض التلقائي تشغيل الملف الجذري.</li>
+            <li>تأكد أن هذا الملف مستقل قدر الإمكان (CSS صغير/inline أو روابط CDN) ليعرض جيد داخل بيئة Bolt.</li>
+        </ul>
+    </section>
+
+    <footer style="margin-top:22px; text-align:center; color:#666;">
+        <small>للمساعدة: استبدل قيم YOUR_BUILDER_API_KEY و YOUR_PAGE_ID و YOUR_BUILDER_PAGE_URL بالقيم الفعلية. وإذا رغبت أعد كتابة الصفحة لتعمل مع WebComponents الرسمي لـ Builder.io - أرسل لي وسأجهز لك النسخة.</small>
+    </footer>
+</main>
+
+<!-- نهاية الملف -->
+</body>
+</html>
